@@ -4,7 +4,8 @@
   "description": "backend for linked origins.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "author": "devPocs",
   "license": "ISC",
@@ -13,5 +14,8 @@
     "express": "^4.19.2",
     "mongoose": "^8.3.1",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
