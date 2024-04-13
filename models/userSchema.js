@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
 const personalInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true, lowercase: true },
   lastName: { type: String, required: true, lowercase: true },
   dateOfBirth: { type: Date, required: true },
-  email: { type: String, required: true, lowercase: true },
+  email: { type: String, required: true, lowercase: true, unique: true },
   phone: { type: String, required: true },
 });
 
@@ -28,7 +29,7 @@ const educationAndEmploymentSchema = new mongoose.Schema({
 });
 
 const housingSituationSchema = new mongoose.Schema({
-  currentHousingSituatuion: { type: String, required: true },
+  currentHousingSituation: { type: String, required: true },
   housingPreference: { type: String },
 });
 
@@ -38,7 +39,7 @@ const familyInfoSchema = new mongoose.Schema({
 });
 
 const socialIntegrationSchema = new mongoose.Schema({
-  interestAndHobbies: { type: String, required: true, default: null },
+  interestsAndHobbies: { type: String, required: true, default: null },
   preferredSocialActivities: { type: String, required: true, default: null }, //preferred social activiies for meeting new people.
   ethos: { type: String, default: null }, // cultural or social inclinations
 });
@@ -48,6 +49,7 @@ const supportNeedsSchema = new mongoose.Schema({
 });
 
 const userSchema = new mongoose.Schema({
+  userId: { type: String, unique: true },
   personalInfo: personalInfoSchema,
   immigationInfo: immigrationInfoSchema,
   languageProficiency: languageProficiencySchema,
@@ -58,4 +60,13 @@ const userSchema = new mongoose.Schema({
   supportNeeds: supportNeedsSchema,
 });
 
+userSchema.pre("save", function (next) {
+  // Only generate a new UUID if the document is new
+  if (!this.userId) {
+    this.userId = uuidv4();
+  }
+  next();
+});
 const Users = mongoose.model("User", userSchema);
+
+module.exports = Users;
