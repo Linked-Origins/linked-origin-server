@@ -1,34 +1,16 @@
 const catchAsync = require("./../utils/catchAsync");
 const ErrorHandler = require("./../utils/errorHandler");
+
 const Users = require("./../models/userSchema");
 
 //register user
 exports.registerUser = catchAsync(async (req, res, next) => {
-  //const {
-  //  personalInfo: { firstName, lastName, dateOfBirth, email, phone },
-  //  immigrationInfo: {
-  //    countryOfOrigin,
-  //    currentImmigrationStatus,
-  //    dateOfImmigration,
-  //    visaType,
-  //    typeOfStatus,
-  //  },
-  //  languageProficiency: { nativeLanguage },
-  //  educationAndEmployment: {
-  //    highestLevelOfEducation,
-  //    previousWorkExperience,
-  //    aspirations,
-  //  },
-  //  housingSituation: { currentHousingSituation, housingPreference },
-  //  familyInfo: { numOfFamilyMembers, relationship },
-  //  socialIntegration: { interestAndHobbies, preferredSocialActivities, ethos },
-  //  supportNeeds: { challenges, supportServices },
-  //} = req.body;
   const {
     firstName,
     lastName,
     dateOfBirth,
     email,
+    password,
     phone,
 
     countryOfOrigin,
@@ -57,7 +39,14 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     supportServices,
   } = req.body;
 
-  const personalInfo = { firstName, lastName, dateOfBirth, email, phone };
+  const personalInfo = {
+    firstName,
+    lastName,
+    dateOfBirth,
+    email,
+    password,
+    phone,
+  };
 
   const immigrationInfo = {
     countryOfOrigin,

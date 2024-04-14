@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
 const personalInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true, lowercase: true },
   lastName: { type: String, required: true, lowercase: true },
   dateOfBirth: { type: Date, required: true },
   email: { type: String, required: true, lowercase: true, unique: true },
+  password: { type: String, required: true },
   phone: { type: String, required: true },
 });
 
@@ -66,6 +68,26 @@ userSchema.pre("save", function (next) {
     this.userId = uuidv4();
   }
   next();
+});
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("personalInfo.password")) {
+    return next();
+  }
+  try {
+    // Generate a salt
+    const salt = await bcrypt.genSalt(10);
+
+    // Hash the password using the salt
+    const hashedPassword = await bcrypt.hash(this.personalInfo.password, salt);
+
+    // Replace the plain password with the hashed one
+    this.personalInfo.password = hashedPassword;
+
+    // Call next middleware
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 const Users = mongoose.model("User", userSchema);
 
