@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const usersRoute = require("./routes/usersRoute");
 const authRoute = require("./routes/authRoute");
 
@@ -27,6 +28,7 @@ mongoose
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 //route middlewares
 app.use("/api/v1/users", usersRoute);
