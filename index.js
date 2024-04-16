@@ -23,12 +23,14 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB Atlas:", err);
   });
-app.get("/", (req, res, next)=>{res.send("Welcome to the back end!")})
+
 //app middlewares.
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+app.get("/", (req, res, next)=>{return res.send("Welcome to the back end!")})
 
 //route middlewares
 app.use("/api/v1/users", usersRoute);
