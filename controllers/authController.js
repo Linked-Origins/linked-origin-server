@@ -1,7 +1,7 @@
 const Users = require("./../models/userSchema");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./../utils/catchAsync");
-const ErrorHandler = require("../utils/errorHandler");
+const ErrorHandler = require("../utils/ErrorHandler");
 
 exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
