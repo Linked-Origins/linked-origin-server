@@ -96,3 +96,20 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     next();
   }
 });
+
+exports.getProfile = catchAsync(async (req, res, next) => {
+  const userId = req.params.id;
+  if (userId) {
+    const profile = await Users.findOne({ userId: userId });
+
+    if (profile) {
+      return res.status(200).json({ message: "success", data: profile });
+    } else {
+      return res
+        .status(404)
+        .json({ message: "Profile not found for that user!" });
+    }
+  } else {
+    return res.status(404).json({ message: "Please, provide a user id!" });
+  }
+});
