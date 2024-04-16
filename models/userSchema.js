@@ -50,6 +50,11 @@ const supportNeedsSchema = new mongoose.Schema({
   supportServices: { type: String, default: null }, //support services or resources
 });
 
+const profileSchema = new mongoose.Schema({
+  name: { type: String },
+  preferences: { type: String }, //temporary structure. to be revisited i decide which AI processing to use.
+});
+
 const userSchema = new mongoose.Schema({
   userId: { type: String, unique: true },
   personalInfo: personalInfoSchema,
@@ -60,7 +65,15 @@ const userSchema = new mongoose.Schema({
   familyInfo: familyInfoSchema,
   socialIntegration: socialIntegrationSchema,
   supportNeeds: supportNeedsSchema,
+  profile: profileSchema,
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return bcrypt.compare(candidatePassword, userPassword);
+};
 
 userSchema.pre("save", function (next) {
   // Only generate a new UUID if the document is new
@@ -88,6 +101,20 @@ userSchema.pre("save", async function (next) {
   } catch (error) {
     next(error);
   }
+});
+userSchema.pre("save", function (next) {
+  // Check if this.profile is undefined
+  if (!this.profile) {
+    // Initialize this.profile
+    this.profile = {};
+  }
+
+  // Set the name property of this.profile if it's not already set
+  if (!this.profile.name) {
+    this.profile.name = this.personalInfo.firstName;
+  }
+
+  next();
 });
 const Users = mongoose.model("User", userSchema);
 

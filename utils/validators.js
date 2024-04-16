@@ -63,7 +63,7 @@ exports.checkEmail = async (req, res, next) => {
   const email = req.body.email;
 
   const emailCheck = await Users.findOne({ "personalInfo.email": email });
-  console.log(email);
+
   if (emailCheck) {
     return res.status(400).json({ message: "email already exists!" });
   }
