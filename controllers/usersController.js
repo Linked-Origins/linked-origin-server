@@ -1,7 +1,16 @@
 const catchAsync = require("./../utils/catchAsync");
 const ErrorHandler = require("./../utils/ErrorHandler");
+const nodemailer = require("nodemailer");
 
 const Users = require("./../models/userSchema");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "pokoh.ufuoma@gmail.com",
+    pass: "hmfjfypstbfgaapt",
+  },
+});
 
 //register user
 exports.registerUser = catchAsync(async (req, res, next) => {
@@ -85,16 +94,66 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     socialIntegration,
     supportNeeds,
   });
+  try {
+    if (newUser) {
+      const mailOptions = {
+        from: "pokoh.ufuoma@gmail.com",
+        to: email,
+        subject: "Welcome to Linked Origin!",
+        text: `Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
+We're thrilled to have you join our growing community.
+Find support:
+Find connections: Meet other immigrants who share your experiences and aspirations. Build friendships and a supportive network through Linked Origin.
+Get personalized help: Our AI assistant, Mon Ami, is here to answer your questions and guide you on your Canadian journey. Mon Ami can help you find resources, offer helpful tips, and suggest relevant discussions within the community forum.
+We offer a wealth of information curated specifically for immigrants in Canada. Explore our comprehensive directory to find information on housing, employment, education, healthcare, and more.
+Get started today! Welcome to your new Canadian community!
+If you have any questions, please don't hesitate to reach out to our support team at [support email address].
+We look forward to being a part of your journey!
+Warmly,
+The Linked Origin Team`,
 
-  if (newUser) {
-    return res
-      .status(200)
-      .json({ message: "user created successfully", data: newUser });
-    next();
-  } else {
-    res.send("error creating");
-    next();
+        html: `
+      <p>Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
+      We're thrilled to have you join our growing community.</p>
+      <p>Find support:</p>
+      <ul>
+        <li>Find connections: Meet other immigrants who share your experiences and aspirations. Build friendships and a supportive network through Linked Origin.</li>
+        <li>Get personalized help: Our AI assistant, Mon Ami, is here to answer your questions and guide you on your Canadian journey. Mon Ami can help you find resources, offer helpful tips, and suggest relevant discussions within the community forum.</li>
+      </ul>
+      <p>We offer a wealth of information curated specifically for immigrants in Canada. Explore our comprehensive directory to find information on housing, employment, education, healthcare, and more.
+      Get started today! Welcome to your new Canadian community!</p>
+      <p>If you have any questions, please don't hesitate to reach out to our support team at [support email address].
+      We look forward to being a part of your journey!</p>
+      <p>Warmly,</p>
+      <p>The Linked Origin Team</p>
+
+      `,
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).json({
+            message:
+              "Error sending email! or email already exists! Check email!",
+          });
+        } else {
+          return res.status(200).json({ message: "Email sent successfully" });
+        }
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "INTERNAL SERVER ERROR",
+      message: "Error processing images or saving to the database",
+    });
   }
+
+  //return res
+  //  .status(200)
+  //  .json({ message: "user created successfully", data: newUser });
+  //next();
+  //else {
+  //res.send("error creating");
+  //next();
 });
 
 exports.getProfile = catchAsync(async (req, res, next) => {
