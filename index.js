@@ -30,6 +30,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+app.get("/", (req, res, next)=>{return res.send("Welcome to the back end!")})
+
 //route middlewares
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/auth", authRoute);

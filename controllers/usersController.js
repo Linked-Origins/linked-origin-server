@@ -1,6 +1,5 @@
 const catchAsync = require("./../utils/catchAsync");
-const ErrorHandler = require("./../utils/ErrorHandler");
-const nodemailer = require("nodemailer");
+const ErrorHandler = require("./../utils/errorHandler");
 
 const Users = require("./../models/userSchema");
 
