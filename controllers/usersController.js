@@ -95,11 +95,17 @@ exports.registerUser = catchAsync(async (req, res, next) => {
   });
   try {
     if (newUser) {
+      const capitalizeFirstLetter = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      };
+
+      const lastName = capitalizeFirstLetter(newUser.personalInfo.lastName);
+
       const mailOptions = {
         from: "pokoh.ufuoma@gmail.com",
         to: email,
         subject: "Welcome to Linked Origin!",
-        text: `Dear ${newUser.personalInfo.lastName}, Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
+        text: `Dear ${lastName}, Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
 We're thrilled to have you join our growing community.
 Find support:
 Find connections: Meet other immigrants who share your experiences and aspirations. Build friendships and a supportive network through Linked Origin.
@@ -112,7 +118,7 @@ Warmly,
 The Linked Origin Team`,
 
         html: `
-      <p>Dear ${newUser.personalInfo.lastName},</p>
+      <p>Dear ${lastName},</p>
       <p>Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
       We're thrilled to have you join our growing community.</p>
       <p>Find support:</p>
