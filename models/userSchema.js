@@ -54,6 +54,17 @@ const profileSchema = new mongoose.Schema({
   name: { type: String },
   preferences: { type: String }, //temporary structure. to be revisited i decide which AI processing to use.
 });
+const searchHistorySchema = new mongoose.Schema({
+  searchTerm: {
+    type: String,
+    required: false,
+  },
+  timestamp: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+});
 
 const userSchema = new mongoose.Schema({
   userId: { type: String, unique: true },
@@ -66,6 +77,7 @@ const userSchema = new mongoose.Schema({
   socialIntegration: socialIntegrationSchema,
   supportNeeds: supportNeedsSchema,
   profile: profileSchema,
+  searchHistory: [searchHistorySchema],
 });
 
 userSchema.methods.correctPassword = async function (
