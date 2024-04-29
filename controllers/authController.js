@@ -23,7 +23,7 @@ exports.login = catchAsync(async (req, res, next) => {
     });
   }
   //if everything is correct, send the token back to the client
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET);
 
   return res
     .status(200)

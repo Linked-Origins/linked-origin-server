@@ -38,7 +38,7 @@ app.get("/", (req, res, next) => {
 //route middlewares
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/search/", searchRoute);
+app.use("/api/v1/search", searchRoute);
 
 //unhandled routes
 app.all("*", (req, res, next) => {
