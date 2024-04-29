@@ -30,7 +30,10 @@ exports.login = catchAsync(async (req, res, next) => {
     .cookie("cookie", token, { httpOnly: true, sameSite: "None", secure: true })
     .json({
       success: true,
-      name: `${user.personalInfo.firstName} ${user.personalInfo.lastName}`,
+      firstName: user.personalInfo.firstName,
+      lastName: user.personalInfo.lastName,
+      email: user.personalInfo.email,
+      phone: user.personalInfo.phone,
       token,
       userId: user.userId,
     });
@@ -87,6 +90,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
