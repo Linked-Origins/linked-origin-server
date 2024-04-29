@@ -20,8 +20,14 @@ const immigrationInfoSchema = new mongoose.Schema({
 });
 
 const languageProficiencySchema = new mongoose.Schema({
-  nativeLanguage: { type: String, required: true },
-  assessment: {},
+  assessment: [
+    {
+      listening: { type: String, required: true },
+      reading: { type: String, required: true },
+      speaking: { type: String, required: true },
+      writing: { type: String, required: true },
+    },
+  ],
 });
 
 const educationAndEmploymentSchema = new mongoose.Schema({
@@ -55,7 +61,7 @@ const profileSchema = new mongoose.Schema({
   preferences: { type: String }, //temporary structure. to be revisited i decide which AI processing to use.
 });
 const searchHistorySchema = new mongoose.Schema({
-  searchTerm: {
+  searchQuery: {
     type: String,
     required: false,
   },
