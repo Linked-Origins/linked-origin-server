@@ -8,7 +8,7 @@ exports.addSearchQuery = catchAsync(async (req, res, next) => {
   const searchQuery = req.body.searchQuery;
 
   //get the user first.
-  const user = await Users.findOne({ userId });
+  const user = await Users.findOne({ userId: userId });
 
   //if no user, return an error message
   if (!user || user.length === 0 || user === null) {
