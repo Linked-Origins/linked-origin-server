@@ -73,6 +73,7 @@ exports.isLoggedIn = async (req, res, next) => {
 
 exports.protectRoute = catchAsync(async (req, res, next) => {
   let token;
+
   //check if the request contains a token
   if (
     req.headers.authorization &&
@@ -81,6 +82,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.cookie) {
     token = req.cookies.cookie;
+    console.log(token);
   } else {
     return res.status(401).json({
       message: `you need to be logged in to view this resource! Don't have an account? You can sign up for free!`,
@@ -100,7 +102,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     }
   }
 
-  const currentUser = await Users.findById(decoded.id);
+  const currentUser = await Users.findById(decoded.userId);
   if (!currentUser) {
     return next(
       new ErrorHandler(
