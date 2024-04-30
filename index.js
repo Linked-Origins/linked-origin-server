@@ -8,6 +8,8 @@ const cors = require("cors");
 const usersRoute = require("./routes/usersRoute");
 const authRoute = require("./routes/authRoute");
 const searchRoute = require("./routes/searchRoute");
+const newsRoute = require("./routes/newsRoute");
+const { getNews } = require("./controllers/newsController");
 
 const app = express();
 
@@ -34,12 +36,19 @@ app.use(cors());
 app.get("/", (req, res, next) => {
   return res.send("Welcome to the back end!");
 });
+// Call the getNews function at least once to populate the database initially
+getNews();
+
+// Set an interval to fetch news every 2 hours
+setInterval(() => {
+  getNews();
+}, 2 * 60 * 60 * 1000);
 
 //route middlewares
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/search", searchRoute);
-
+app.use("/api/v1/news-update", newsRoute);
 //unhandled routes
 app.all("*", (req, res, next) => {
   const err = new Error(`Can't find ${req.originalUrl} on this server!`);
