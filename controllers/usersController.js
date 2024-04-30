@@ -171,6 +171,7 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 
 exports.getProfile = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
+  console.log(userId)
   if (userId) {
     const profile = await Users.findOne({ userId: userId });
 
