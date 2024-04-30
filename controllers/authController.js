@@ -23,14 +23,17 @@ exports.login = catchAsync(async (req, res, next) => {
     });
   }
   //if everything is correct, send the token back to the client
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET);
 
   return res
     .status(200)
     .cookie("cookie", token, { httpOnly: true, sameSite: "None", secure: true })
     .json({
       success: true,
-      name: `${user.personalInfo.firstName} ${user.personalInfo.lastName}`,
+      firstName: user.personalInfo.firstName,
+      lastName: user.personalInfo.lastName,
+      email: user.personalInfo.email,
+      phone: user.personalInfo.phone,
       token,
       userId: user.userId,
     });
@@ -87,6 +90,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({

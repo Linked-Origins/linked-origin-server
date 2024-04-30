@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const usersRoute = require("./routes/usersRoute");
 const authRoute = require("./routes/authRoute");
+const searchRoute = require("./routes/searchRoute");
 
 const app = express();
 
@@ -30,11 +31,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-app.get("/", (req, res, next)=>{return res.send("Welcome to the back end!")})
+app.get("/", (req, res, next) => {
+  return res.send("Welcome to the back end!");
+});
 
 //route middlewares
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/search", searchRoute);
 
 //unhandled routes
 app.all("*", (req, res, next) => {

@@ -175,7 +175,15 @@ exports.getProfile = catchAsync(async (req, res, next) => {
     const profile = await Users.findOne({ userId: userId });
 
     if (profile) {
-      return res.status(200).json({ message: "success", data: profile });
+      return res.status(200).json({
+        message: "success",
+        data: {
+          firstName: profile.personalInfo.firstName,
+          lastName: profile.personalInfo.lastName,
+          email: profile.personalInfo.email,
+          phone: profile.personalInfo.phone,
+        },
+      });
     } else {
       return res
         .status(404)
