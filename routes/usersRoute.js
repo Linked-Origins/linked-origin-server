@@ -8,6 +8,6 @@ const {
 const { protectRoute } = require("./../controllers/authController");
 
 router.post("/register-new-user", checkEmail, checkNewUser, registerUser);
-router.get("/profile/:id", protectRoute, getProfile);
+router.get("/profile", protectRoute, getProfile);
 
 module.exports = router;

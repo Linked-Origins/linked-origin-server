@@ -58,11 +58,13 @@ exports.isLoggedIn = async (req, res, next) => {
       );
 
       //check if user still exists
-      const currentUser = await Users.findById(decoded.id);
+      const currentUser = await Users.findOne(decoded.id);
       if (!currentUser) {
         return next();
       }
       res.locals.user = currentUser;
+
+      console.log(res.locals.user);
       return next();
     } catch (err) {
       return next();
@@ -102,7 +104,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     }
   }
 
-  const currentUser = await Users.findById(decoded.userId);
+  const currentUser = await Users.findOne(decoded.userId);
   if (!currentUser) {
     return next(
       new ErrorHandler(
@@ -111,6 +113,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
       )
     );
   }
+
   req.user = currentUser;
   next();
 });

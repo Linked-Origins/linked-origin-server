@@ -6,7 +6,7 @@ const {
   getSearchHistory,
 } = require("./../controllers/searchController");
 
-router.post("/update-search-history/user/:id", protectRoute, addSearchQuery);
-router.get("/search-history/user/:id", protectRoute, getSearchHistory);
+router.post("/update-search-history/user", protectRoute, addSearchQuery);
+router.get("/search-history/user", protectRoute, getSearchHistory);
 
 module.exports = router;

@@ -42,7 +42,7 @@ getNews();
 // Set an interval to fetch news every 2 hours
 setInterval(() => {
   getNews();
-}, 2 * 60 * 60 * 1000);
+}, 240 * 1000);
 
 //route middlewares
 app.use("/api/v1/users", usersRoute);
