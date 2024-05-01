@@ -170,25 +170,20 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getProfile = catchAsync(async (req, res, next) => {
-  const userId = req.params.id;
-  if (userId) {
-    const profile = await Users.findOne({ userId: userId });
-    if (profile) {
-      return res.status(200).json({
-        message: "success",
-        data: {
-          firstName: profile.personalInfo.firstName,
-          lastName: profile.personalInfo.lastName,
-          email: profile.personalInfo.email,
-          phone: profile.personalInfo.phone,
-        },
-      });
-    } else {
-      return res
-        .status(404)
-        .json({ message: "Profile not found for that user!" });
-    }
+  // Use the authenticated user from req.user
+  const user = req.user;
+
+  if (user) {
+    return res.status(200).json({
+      message: "success",
+      data: {
+        firstName: user.personalInfo.firstName,
+        lastName: user.personalInfo.lastName,
+        email: user.personalInfo.email,
+        phone: user.personalInfo.phone,
+      },
+    });
   } else {
-    return res.status(404).json({ message: "Please, provide a user id!" });
+    return res.status(404).json({ message: "Profile not found!" });
   }
 });
