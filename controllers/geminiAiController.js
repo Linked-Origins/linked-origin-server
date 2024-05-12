@@ -6,7 +6,7 @@ const {
 
 const Users = require("./../models/userSchema");
 const MODEL_NAME = "gemini-pro";
-const API_KEY = process.env.GEM_API_KEY;
+const API_KEY = "AIzaSyAjzv84QBVbk7nIqw5reKBjCSzQcjh_STE";
 
 exports.runChat = async function (req, res, next) {
   const user = req.user;
@@ -69,7 +69,7 @@ exports.runChat = async function (req, res, next) {
     );
     userHistory = userHistory.monAmiChatHistory.messages;
     // Initialize chat with persona context and user history
-    console.log(userHistory);
+
     const chat = model.startChat({
       generationConfig,
       safetySettings,
