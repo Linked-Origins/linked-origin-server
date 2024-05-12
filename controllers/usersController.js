@@ -187,3 +187,21 @@ exports.getProfile = catchAsync(async (req, res, next) => {
     return res.status(404).json({ message: "Profile not found!" });
   }
 });
+
+exports.updateProfile = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const { firstName, lastName, email, phone } = req.body;
+  const update = await Users.findOneAndUpdate(
+    { userId: user.userId },
+    {
+      "personalInfo.firstName": firstName,
+      "personalInfo.lastName": lastName,
+      "personalInfo.phone": phone,
+    },
+    { new: true }
+  );
+  if (update) {
+    return res.status(200).json({ message: "update sucessful" });
+  }
+  next(new ErrorHandler(400, "error updating user's profile"));
+});

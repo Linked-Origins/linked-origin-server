@@ -7,7 +7,6 @@ const newsSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  content: { type: String },
   url: {
     type: String,
   },
@@ -16,6 +15,7 @@ const newsSchema = new mongoose.Schema({
     type: Date,
   },
   source: { name: { type: String }, url: { type: String } },
+  category: { type: String },
 });
 
 const News = mongoose.model("News", newsSchema);
