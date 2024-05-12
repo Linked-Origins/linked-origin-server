@@ -69,3 +69,20 @@ exports.checkEmail = async (req, res, next) => {
   }
   next();
 };
+
+exports.checkUserForUpdate = (req, res, next) => {
+  // Define validation rules
+  const validation = new niv.Validator(req.body, {
+    firstName: "required|string",
+    lastName: "required|string",
+    phone: "required|string",
+  });
+
+  // Perform validation
+  validation.check().then(async (matched) => {
+    if (!matched) {
+      return res.status(400).json({ status: "fail", error: validation.errors });
+    }
+    next();
+  });
+};

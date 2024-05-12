@@ -67,9 +67,20 @@ const searchHistorySchema = new mongoose.Schema({
   },
   timestamp: {
     type: Date,
-    required: true,
     default: Date.now,
   },
+});
+
+const chatHistorySchema = new mongoose.Schema({
+  messages: [
+    [
+      {
+        role: { type: String, enum: ["user", "model"] },
+        parts: [{ text: { type: String } }],
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
+  ],
 });
 
 const userSchema = new mongoose.Schema({
@@ -84,6 +95,7 @@ const userSchema = new mongoose.Schema({
   supportNeeds: supportNeedsSchema,
   profile: profileSchema,
   searchHistory: [searchHistorySchema],
+  monAmiChatHistory: [chatHistorySchema],
 });
 
 userSchema.methods.correctPassword = async function (
