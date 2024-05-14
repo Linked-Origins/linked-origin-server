@@ -3,7 +3,7 @@ const Users = require("./../models/userSchema");
 
 // Function to validate password
 function validatePassword(value) {
-  const regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[A-Z]).{8,}$/;
+  const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
   return regex.test(value);
 }
 
