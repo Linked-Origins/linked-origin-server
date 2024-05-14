@@ -10,10 +10,10 @@ const {
   getProfile,
   updateProfile,
 } = require("./../controllers/usersController");
-const { protectRoute } = require("./../controllers/authController");
+const { protectRoute, isLoggedIn } = require("./../controllers/authController");
 
 router.post("/register-new-user", checkEmail, checkNewUser, registerUser);
-router.get("/profile", protectRoute, getProfile);
-router.put("/update-profile", protectRoute, updateProfile);
+router.get("/profile", isLoggedIn, getProfile);
+router.put("/update-profile", updateProfile);
 
 module.exports = router;

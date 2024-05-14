@@ -2,6 +2,7 @@ const Users = require("./../models/userSchema");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./../utils/catchAsync");
 const ErrorHandler = require("../utils/ErrorHandler");
+const { promisify } = require("util");
 
 exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
@@ -18,12 +19,16 @@ exports.login = catchAsync(async (req, res, next) => {
     !(await user.correctPassword(password, user.personalInfo.password))
   ) {
     return res.status(401).json({
-      success: "fail",
-      message: "Incorrect email or password! pls, login again.",
+      success: false,
+      message: "Incorrect email or password! Please login again.",
     });
   }
-  //if everything is correct, send the token back to the client
+
+  // Generate Bearer Token
   const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET);
+
+  // Set Bearer token in response header
+  res.setHeader("Authorization", `Bearer ${token}`);
 
   return res
     .status(200)
@@ -49,28 +54,31 @@ exports.logOut = (req, res) => {
     .json({ message: "logged out!" });
 };
 exports.isLoggedIn = async (req, res, next) => {
-  if (req.cookies.cookie) {
-    //verifytoken
-    try {
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.cookie,
-        process.env.JWT_SECRET
-      );
-
-      //check if user still exists
-      const currentUser = await Users.findOne(decoded.id);
-      if (!currentUser) {
-        return next();
-      }
-      res.locals.user = currentUser;
-
-      console.log(res.locals.user);
-      return next();
-    } catch (err) {
-      return next();
-    }
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.cookie) {
+    token = req.cookies.cookie;
+    console.log(token);
   }
-  next();
+  if (token) {
+    //verifytoken
+
+    console.log("tokeeeeen", token);
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    console.log("decoded", decoded);
+    //check if user still exists
+    const currentUser = await Users.findOne({ userId: decoded.id });
+    if (!currentUser) {
+      return next(err);
+    }
+    req.user = currentUser;
+    console.log(currentUser);
+    return next();
+  }
 };
 
 exports.protectRoute = catchAsync(async (req, res, next) => {
@@ -115,5 +123,6 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   }
 
   req.user = currentUser;
+
   next();
 });
