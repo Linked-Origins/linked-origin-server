@@ -171,16 +171,16 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 
 exports.getProfile = catchAsync(async (req, res, next) => {
   // Use the authenticated user from req.user
-  const user = req.user;
+  const currentUser = req.user;
 
-  if (user) {
+  if (currentUser) {
     return res.status(200).json({
       message: "success",
       data: {
-        firstName: user.personalInfo.firstName,
-        lastName: user.personalInfo.lastName,
-        email: user.personalInfo.email,
-        phone: user.personalInfo.phone,
+        firstName: currentUser.personalInfo.firstName,
+        lastName: currentUser.personalInfo.lastName,
+        email: currentUser.personalInfo.email,
+        phone: currentUser.personalInfo.phone,
       },
     });
   } else {
@@ -189,7 +189,7 @@ exports.getProfile = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProfile = catchAsync(async (req, res, next) => {
-  const user = req.user;
+  const user = req.locals.user;
   const { firstName, lastName, email, phone } = req.body;
   const update = await Users.findOneAndUpdate(
     { userId: user.userId },
