@@ -3,7 +3,7 @@ const Users = require("./../models/userSchema");
 
 // Function to validate password
 function validatePassword(value) {
-  const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
   return regex.test(value);
 }
 
@@ -40,19 +40,23 @@ exports.checkNewUser = (req, res, next) => {
     preferredSocialActivities: "required|string",
     ethos: "required|string",
   });
+  // Validate password separately
+  if (!validatePassword(req.body.password)) {
+    console.log("i am here");
+    return res.status(400).json({
+      status: "fail",
+      error: {
+        password:
+          "Password must meet the specified requirements: Must contain at least one uppercase letter, lowercase letter, one number between 0-9 and must be at least 8 characters long",
+      },
+    });
+  }
 
   // Perform validation
   validation.check().then(async (matched) => {
+    console.log("gegege");
     if (!matched) {
       return res.status(400).json({ status: "fail", error: validation.errors });
-    }
-
-    // Validate password separately
-    if (!validatePassword(req.body.password)) {
-      return res.status(400).json({
-        status: "fail",
-        error: { password: "Password must meet the specified requirements" },
-      });
     }
 
     next();
