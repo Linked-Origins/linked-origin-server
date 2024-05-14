@@ -18,7 +18,7 @@ exports.login = catchAsync(async (req, res, next) => {
     !(await user.correctPassword(password, user.personalInfo.password))
   ) {
     return res.status(401).json({
-      success: fail,
+      success: "fail",
       message: "Incorrect email or password! pls, login again.",
     });
   }
