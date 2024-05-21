@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const usersRoute = require("./routes/usersRoute");
 const authRoute = require("./routes/authRoute");
 const searchRoute = require("./routes/searchRoute");
@@ -14,7 +13,8 @@ const jobsRoute = require("./routes/jobsListingsRoute");
 const { getNews, getWorldNews } = require("./controllers/newsController");
 const axios = require("axios");
 const { googlePlaceCheck } = require("./controllers/searchController");
-
+const { addCategory } = require("./controllers/categoryManagement");
+const cors = require("cors");
 const app = express();
 
 //import environment variables.
@@ -57,6 +57,7 @@ app.use("/api/v1/users/mon-ami", chatRoute);
 app.use("/api/v1/jobs", jobsRoute);
 
 app.get("/locs", googlePlaceCheck);
+app.post("/test", addCategory);
 
 // Route to fetch and scrape CBC News articles
 //app.get("/cbs-news", async (req, res) => {
