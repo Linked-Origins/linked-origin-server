@@ -7,13 +7,14 @@ const { promisify } = require("util");
 exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  console.log(email);
   //check if user exists and password is correct
   const user = await Users.findOne({ "personalInfo.email": email })
     .select("personalInfo.password")
     .select("personalInfo.firstName")
     .select("personalInfo.lastName")
     .select("userId");
-
+  console.log(user);
   if (
     !user ||
     !(await user.correctPassword(password, user.personalInfo.password))
