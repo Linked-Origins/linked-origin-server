@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const MonAmiChatHistory = require("./monAmiChatHistory");
 
 const personalInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true, lowercase: true },
@@ -71,18 +72,6 @@ const searchHistorySchema = new mongoose.Schema({
   },
 });
 
-const chatHistorySchema = new mongoose.Schema({
-  messages: [
-    [
-      {
-        role: { type: String, enum: ["user", "model"] },
-        parts: [{ text: { type: String } }],
-        timestamp: { type: Date, default: Date.now },
-      },
-    ],
-  ],
-});
-
 const userSchema = new mongoose.Schema({
   userId: { type: String, unique: true },
   personalInfo: personalInfoSchema,
@@ -95,7 +84,9 @@ const userSchema = new mongoose.Schema({
   supportNeeds: supportNeedsSchema,
   profile: profileSchema,
   searchHistory: [searchHistorySchema],
-  monAmiChatHistory: [chatHistorySchema],
+  monAmiChatHistory: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "MonAmiChatHistory" },
+  ],
 });
 
 userSchema.methods.correctPassword = async function (
