@@ -48,7 +48,7 @@ exports.addSubCategory = async (req, res, next) => {
     personaContext: persona,
   };
   // check if the category exists
-  const foundCategory = await Category.findOne({ category });
+  const foundCategory = await Category.findOne({ categoryName: category });
   //if the category doesnt exist return an error that it the category doesnt exist.
   if (!foundCategory) {
     return res.send("this category does not exist");

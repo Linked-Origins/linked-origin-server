@@ -30,7 +30,6 @@ exports.fetchJobListings = catchAsync(async function (req, res, next) {
   } else {
     newUrl += "?" + paramsArray.join("&");
   }
-  console.log(newUrl);
 
   let response = await axios(newUrl);
 

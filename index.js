@@ -13,7 +13,10 @@ const jobsRoute = require("./routes/jobsListingsRoute");
 const { getNews, getWorldNews } = require("./controllers/newsController");
 const axios = require("axios");
 const { googlePlaceCheck } = require("./controllers/searchController");
-const { addCategory } = require("./controllers/categoryManagement");
+const {
+  addCategory,
+  addSubCategory,
+} = require("./controllers/categoryManagement");
 const cors = require("cors");
 const app = express();
 
@@ -57,7 +60,8 @@ app.use("/api/v1/users/mon-ami", chatRoute);
 app.use("/api/v1/jobs", jobsRoute);
 
 app.get("/locs", googlePlaceCheck);
-app.post("/test", addCategory);
+app.post("/add-category", addCategory);
+app.post("/add-subcategory", addSubCategory);
 
 // Route to fetch and scrape CBC News articles
 //app.get("/cbs-news", async (req, res) => {
