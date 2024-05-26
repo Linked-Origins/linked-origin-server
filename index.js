@@ -10,6 +10,7 @@ const searchRoute = require("./routes/searchRoute");
 const newsRoute = require("./routes/newsRoute");
 const chatRoute = require("./routes/chat");
 const jobsRoute = require("./routes/jobsListingsRoute");
+const matchingRoute = require("./routes/matchingRoutes/matchingRoute");
 const { getNews, getWorldNews } = require("./controllers/newsController");
 const axios = require("axios");
 const { googlePlaceCheck } = require("./controllers/searchController");
@@ -18,6 +19,7 @@ const {
   addSubCategory,
 } = require("./controllers/categoryManagement");
 const cors = require("cors");
+
 const app = express();
 
 //import environment variables.
@@ -58,6 +60,7 @@ app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/news-update", newsRoute);
 app.use("/api/v1/users/mon-ami", chatRoute);
 app.use("/api/v1/jobs", jobsRoute);
+app.use("/api/v1/matching/", matchingRoute);
 
 app.get("/locs", googlePlaceCheck);
 app.post("/add-category", addCategory);
