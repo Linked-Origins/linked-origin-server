@@ -96,32 +96,66 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     const mailOptions = {
       from: "info@linkedorigins.com",
       to: email,
-      subject: "Welcome to Linked Origin!",
-      text: `Dear ${lastName}, Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada! We're thrilled to have you join our growing community.
-  Find support:
-  Find connections: Meet other immigrants who share your experiences and aspirations. Build friendships and a supportive network through Linked Origin.
-  Get personalized help: Our AI assistant, Mon Ami, is here to answer your questions and guide you on your Canadian journey. Mon Ami can help you find resources, offer helpful tips, and suggest relevant discussions within the community forum.
-  We offer a wealth of information curated specifically for immigrants in Canada. Explore our comprehensive directory to find information on housing, employment, education, healthcare, and more. Get started today! Welcome to your new Canadian community!
-  If you have any questions, please don't hesitate to reach out to our support team at [support email address].
-  We look forward to being a part of your journey!
-  Warmly,
-  The Linked Origin Team`,
+      subject: "Welcome to Linked Origins: Your Gateway to Thriving in Canada!",
+      text: `Hi ${lastName}.
+  We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower 
+  newcomers like you to settle in and succeed in Canada! 🇨🇦
+  AI by Your Side, Community at Your Back
+  Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the 
+  resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your 
+  search for information, navigate government services, and find relevant community resources.
+
+  Empowering Your Journey
+  Whether you're looking for information on immigration, healthcare, housing, education, or legal
+  services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive 
+  directory as we build our platform to help you connect with locals and other newcomers on a similar path.
+
+  Join the Linked Origins Community
+  We are working to build a vibrant community of welcoming individuals and organizations ready 
+  to support you. Our coming soon features, discussion forums and matching system is being designed to 
+  help you network with fellow newcomers, share experiences with locals and build meaningful connections.
+
+  Get Started Today!
+  Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.
+  Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.
+  Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)
+  Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.
+
+  We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!
+
+  The Linked Origins Team
+`,
 
       html: `
-        <p>Dear ${lastName},</p>
-        <p>Welcome to Linked Origin, your one-stop platform for information, connections and resources empowering immigrants in Canada!
-        We're thrilled to have you join our growing community.</p>
-        <p>Find support:</p>
+        <p>Hi ${lastName},</p>
+        <p>We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower 
+        newcomers like you to settle in and succeed in Canada! 🇨🇦
+        AI by Your Side, Community at Your Back
+        Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the 
+        resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your 
+        search for information, navigate government services, and find relevant community resources.</p>
+
+        <p>Empowering Your Journey</p>
+        <p>Whether you're looking for information on immigration, healthcare, housing, education, or legal
+        services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive 
+        directory as we build our platform to help you connect with locals and other newcomers on a similar path</p>
+
+        <p>Join the Linked Origins Community</p>
+        <p>We are working to build a vibrant community of welcoming individuals and organizations ready 
+        to support you. Our coming soon features, discussion forums and matching system is being designed to 
+        help you network with fellow newcomers, share experiences with locals and build meaningful connections.</p>
+
+        <p>Get Started Today!</p>
         <ul>
-          <li>Find connections: Meet other immigrants who share your experiences and aspirations. Build friendships and a supportive network through Linked Origin.</li>
-          <li>Get personalized help: Our AI assistant, Mon Ami, is here to answer your questions and guide you on your Canadian journey. Mon Ami can help you find resources, offer helpful tips, and suggest relevant discussions within the community forum.</li>
+        <li>Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.</li>
+        <li>Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.</li>
+        <li>Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)</li>
+        <li>Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.</li>
         </ul>
-        <p>We offer a wealth of information curated specifically for immigrants in Canada. Explore our comprehensive directory to find information on housing, employment, education, healthcare, and more.
-        Get started today! Welcome to your new Canadian community!</p>
-        <p>If you have any questions, please don't hesitate to reach out to our support team at [support email address].
-        We look forward to being a part of your journey!</p>
-        <p>Warmly,</p>
-        <p>The Linked Origin Team</p>
+      
+        <p>We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!</p>
+      
+        <p>The Linked Origins Team</p>
       `,
     };
 
@@ -159,14 +193,6 @@ exports.registerUser = catchAsync(async (req, res, next) => {
       message: "Error saving to the database",
     });
   }
-
-  //return res
-  //  .status(200)
-  //  .json({ message: "user created successfully", data: newUser });
-  //next();
-  //else {
-  //res.send("error creating");
-  //next();
 });
 
 exports.getProfile = catchAsync(async (req, res, next) => {
@@ -189,14 +215,48 @@ exports.getProfile = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProfile = catchAsync(async (req, res, next) => {
-  const user = req.locals.user;
-  const { firstName, lastName, email, phone } = req.body;
+  const user = req.user;
+  const imageUrl = req.file.path;
+  console.log(imageUrl);
+  const {
+    phone,
+    address,
+    countryOfOrigin,
+    currentImmigrationStatus,
+    dateOfImmigration,
+    visaType,
+    typeOfStatus,
+    highestLevelOfEducation,
+    previousWorkExperience,
+    currentHousingSituation,
+    housingPreference,
+    numOfFamilyMembers,
+    relationship,
+    interestsAndHobbies,
+    preferredSocialActivities,
+    ethos,
+  } = req.body;
+
   const update = await Users.findOneAndUpdate(
     { userId: user.userId },
     {
-      "personalInfo.firstName": firstName,
-      "personalInfo.lastName": lastName,
+      "personalInfo.address": address,
       "personalInfo.phone": phone,
+      "immigrationInfo.countryOfOrigin": countryOfOrigin,
+      "immigrationInfo.currentImmigrationStatus": currentImmigrationStatus,
+      "immigrationInfo.dateOfImmigration": dateOfImmigration,
+      "immigrationInfo.visaType": visaType,
+      "immigrationInfo.typeOfStatus": typeOfStatus,
+      "educationAndEmployment.highestLevelOfEducation": highestLevelOfEducation,
+      "educationAndEmployment.previousWorkExperience": previousWorkExperience,
+      "housingSituation.currentHousingSituation": currentHousingSituation,
+      "housingSituation.housingPreference": housingPreference,
+      "familyInfo.numOfFamilyMembers": numOfFamilyMembers,
+      "familyInfo.relationship": relationship,
+      "socialIntegration.interestsAndHobbies": interestsAndHobbies,
+      "socialIntegration.preferredSocialActivities": preferredSocialActivities,
+      "socialIntegration.ethos": ethos,
+      profilePicture: imageUrl,
     },
     { new: true }
   );
