@@ -217,7 +217,7 @@ exports.getProfile = catchAsync(async (req, res, next) => {
 exports.updateProfile = catchAsync(async (req, res, next) => {
   const user = req.user;
   const imageUrl = req.file.path;
-  console.log(imageUrl);
+
   const {
     phone,
     address,

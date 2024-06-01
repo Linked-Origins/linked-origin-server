@@ -4,6 +4,7 @@ const Immigrants = require("./../../models/matchingModels/immigrantSchema");
 const Locals = require("./../../models/matchingModels/localsSchema");
 
 exports.addNewImmigrant = catchAsync(async (req, res, next) => {
+  const document = req.file.path;
   const {
     firstName,
     lastName,
@@ -34,6 +35,7 @@ exports.addNewImmigrant = catchAsync(async (req, res, next) => {
     selfDescription,
     hobbies,
     specificAreasOfNeed,
+    document,
   });
 
   if (newImmigrant) {

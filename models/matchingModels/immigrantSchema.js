@@ -15,6 +15,7 @@ const immigrantSchema = new mongoose.Schema({
   selfDescription: { type: String },
   hobbies: [{ type: String }],
   specificAreasOfNeed: [{ type: String }],
+  document: { type: String },
 });
 
 const Immigrants = mongoose.model("Immigrant", immigrantSchema);
