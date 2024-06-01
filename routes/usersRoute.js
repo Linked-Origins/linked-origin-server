@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const multerMiddleware = require("./../utils/image_upload/multerConfig");
+
 const {
   checkNewUser,
   checkEmail,
@@ -13,7 +15,12 @@ const {
 const { protectRoute, isLoggedIn } = require("./../controllers/authController");
 
 router.post("/register-new-user", checkEmail, checkNewUser, registerUser);
-router.get("/profile", isLoggedIn, getProfile);
-router.put("/update-profile", updateProfile);
+router.get("/profile", protectRoute, getProfile);
+router.put(
+  "/update-profile",
+  protectRoute,
+  multerMiddleware("users"),
+  updateProfile
+);
 
 module.exports = router;

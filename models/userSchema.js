@@ -10,6 +10,7 @@ const personalInfoSchema = new mongoose.Schema({
   email: { type: String, required: true, lowercase: true, unique: true },
   password: { type: String, required: true },
   phone: { type: String, required: true },
+  address: { type: String },
 });
 
 const immigrationInfoSchema = new mongoose.Schema({
@@ -75,7 +76,7 @@ const searchHistorySchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   userId: { type: String, unique: true },
   personalInfo: personalInfoSchema,
-  immigationInfo: immigrationInfoSchema,
+  immigrationInfo: immigrationInfoSchema,
   languageProficiency: languageProficiencySchema,
   educationAndEmployment: educationAndEmploymentSchema,
   housingSituation: housingSituationSchema,
@@ -87,6 +88,7 @@ const userSchema = new mongoose.Schema({
   monAmiChatHistory: [
     { type: mongoose.Schema.Types.ObjectId, ref: "MonAmiChatHistory" },
   ],
+  profilePicture: { type: String },
 });
 
 userSchema.methods.correctPassword = async function (
