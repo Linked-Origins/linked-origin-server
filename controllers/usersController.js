@@ -13,6 +13,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 //register user
 exports.registerUser = catchAsync(async (req, res, next) => {
   const {
@@ -84,77 +88,66 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 
   const supportNeeds = { challenges, supportServices };
 
-  //add the new user.
   try {
-    // Define a function to capitalize the first letter of a string
-    const capitalizeFirstLetter = (str) => {
-      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    };
-
     // Create the mail options
     const lastName = capitalizeFirstLetter(personalInfo.lastName);
     const mailOptions = {
       from: "info@linkedorigins.com",
       to: email,
       subject: "Welcome to Linked Origins: Your Gateway to Thriving in Canada!",
-      text: `Hi ${lastName}.
+      text: `Hi ${lastName},
   We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower 
   newcomers like you to settle in and succeed in Canada! 🇨🇦
+  
   AI by Your Side, Community at Your Back
   Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the 
   resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your 
   search for information, navigate government services, and find relevant community resources.
-
+  
   Empowering Your Journey
   Whether you're looking for information on immigration, healthcare, housing, education, or legal
   services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive 
   directory as we build our platform to help you connect with locals and other newcomers on a similar path.
-
+  
   Join the Linked Origins Community
   We are working to build a vibrant community of welcoming individuals and organizations ready 
   to support you. Our coming soon features, discussion forums and matching system is being designed to 
   help you network with fellow newcomers, share experiences with locals and build meaningful connections.
-
+  
   Get Started Today!
   Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.
   Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.
   Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)
   Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.
-
+  
   We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!
-
+  
   The Linked Origins Team
-`,
-
+  `,
       html: `
         <p>Hi ${lastName},</p>
-        <p>We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower 
-        newcomers like you to settle in and succeed in Canada! 🇨🇦
-        AI by Your Side, Community at Your Back
-        Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the 
-        resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your 
-        search for information, navigate government services, and find relevant community resources.</p>
-
-        <p>Empowering Your Journey</p>
-        <p>Whether you're looking for information on immigration, healthcare, housing, education, or legal
-        services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive 
-        directory as we build our platform to help you connect with locals and other newcomers on a similar path</p>
-
-        <p>Join the Linked Origins Community</p>
-        <p>We are working to build a vibrant community of welcoming individuals and organizations ready 
-        to support you. Our coming soon features, discussion forums and matching system is being designed to 
-        help you network with fellow newcomers, share experiences with locals and build meaningful connections.</p>
-
-        <p>Get Started Today!</p>
+  
+        <p>We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower newcomers like you to settle in and succeed in Canada! 🇨🇦</p>
+  
+        <p><strong>AI by Your Side, Community at Your Back</strong></p>
+        <p>Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your search for information, navigate government services, and find relevant community resources.</p>
+  
+        <p><strong>Empowering Your Journey</strong></p>
+        <p>Whether you're looking for information on immigration, healthcare, housing, education, or legal services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive directory as we build our platform to help you connect with locals and other newcomers on a similar path.</p>
+  
+        <p><strong>Join the Linked Origins Community</strong></p>
+        <p>We are working to build a vibrant community of welcoming individuals and organizations ready to support you. Our coming soon features, discussion forums and matching system is being designed to help you network with fellow newcomers, share experiences with locals and build meaningful connections.</p>
+  
+        <p><strong>Get Started Today!</strong></p>
         <ul>
-        <li>Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.</li>
-        <li>Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.</li>
-        <li>Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)</li>
-        <li>Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.</li>
+          <li>Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.</li>
+          <li>Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.</li>
+          <li>Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)</li>
+          <li>Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.</li>
         </ul>
-      
+  
         <p>We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!</p>
-      
+  
         <p>The Linked Origins Team</p>
       `,
     };
