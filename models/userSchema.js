@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const MonAmiChatHistory = require("./monAmiChatHistory");
+const crypto = require("crypto");
 
 const personalInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true, lowercase: true },
@@ -89,6 +90,8 @@ const userSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "MonAmiChatHistory" },
   ],
   profilePicture: { type: String },
+  passwordResetToken: { type: String },
+  tokenExpires: { type: Date },
 });
 
 userSchema.methods.correctPassword = async function (
@@ -96,6 +99,16 @@ userSchema.methods.correctPassword = async function (
   userPassword
 ) {
   return bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  return resetToken;
 };
 
 userSchema.pre("save", function (next) {

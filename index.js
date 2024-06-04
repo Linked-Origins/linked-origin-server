@@ -11,6 +11,8 @@ const newsRoute = require("./routes/newsRoute");
 const chatRoute = require("./routes/chat");
 const jobsRoute = require("./routes/jobsListingsRoute");
 const matchingRoute = require("./routes/matchingRoutes/matchingRoute");
+const newsletterSubscriptionRoute = require("./routes/subscriptionRoutes/newsletterSubscriptionRoute");
+const forgottenPasswordRoute = require("./routes/passwordHandlingRoute/forgottenPasswordRoute");
 const { getNews, getWorldNews } = require("./controllers/newsController");
 const axios = require("axios");
 const { googlePlaceCheck } = require("./controllers/searchController");
@@ -61,6 +63,8 @@ app.use("/api/v1/news-update", newsRoute);
 app.use("/api/v1/users/mon-ami", chatRoute);
 app.use("/api/v1/jobs", jobsRoute);
 app.use("/api/v1/matching/", matchingRoute);
+app.use("/api/v1/subscription/newsletter", newsletterSubscriptionRoute);
+app.use("/api/v1/password-handling", forgottenPasswordRoute);
 
 app.get("/locs", googlePlaceCheck);
 app.post("/add-category", addCategory);
