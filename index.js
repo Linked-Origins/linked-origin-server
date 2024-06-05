@@ -66,7 +66,6 @@ app.use("/api/v1/matching/", matchingRoute);
 app.use("/api/v1/subscription/newsletter", newsletterSubscriptionRoute);
 app.use("/api/v1/password-handling", forgottenPasswordRoute);
 
-app.get("/locs", googlePlaceCheck);
 app.post("/add-category", addCategory);
 app.post("/add-subcategory", addSubCategory);
 
