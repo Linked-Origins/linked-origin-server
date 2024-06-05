@@ -21,8 +21,6 @@ exports.subscribe = catchAsync(async (req, res, next) => {
   try {
     const newSubscriber = await Subscriber.create({ email, name });
 
-    // Create the mail options
-
     const mailOptions = {
       from: "info@linkedorigins.com",
       to: email,
