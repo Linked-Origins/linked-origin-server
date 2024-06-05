@@ -73,17 +73,21 @@ exports.getSearchHistory = catchAsync(async (req, res, next) => {
 
 exports.googlePlaceCheck = async (req, res, next) => {
   const query = req.body.query; // User search query, e.g., "where can I find pizza"
-  const location = req.body.location; // User's location, e.g., "New York, NY"
+  const lat = req.body.lat; // User's location, e.g., "New York, NY"
+  const lng = req.body.lng;
 
   try {
     // API endpoint and request (choose the appropriate API)
-    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${location}&key=AIzaSyCNUr0hLtD4PNnqqz_20S7DZ20Z1buf-E0`;
+    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${lat},${lng}&radius=50000&key=AIzaSyCNUr0hLtD4PNnqqz_20S7DZ20Z1buf-E0`;
 
     // Make the API request
     const response = await axios.get(apiEndpoint);
 
     // Send the list of places back to the client
-    res.json(response.data.results);
+    res.json({
+      results: response.data.results,
+      length: response.data.results.length,
+    });
   } catch (error) {
     // Handle error
     console.error(error);
