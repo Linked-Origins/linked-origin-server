@@ -75,7 +75,7 @@ exports.googlePlaceCheck = async (req, res, next) => {
   const GOOGLE_PLACES_KEY = process.env.GOOGLE_PLACES_KEY;
 
   try {
-    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${lat},${lng}&radius=50000&key=${GOOGLE_PLACES_KEY}`;
+    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${lat},${lng}&radius=25000&region=ca&key=${GOOGLE_PLACES_KEY}`;
 
     const response = await axios.get(apiEndpoint);
     res.json({
