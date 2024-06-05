@@ -27,19 +27,14 @@ exports.forgotPassword = async (req, res, next) => {
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
-
-  // Generate a token
   const resetToken = user.createPasswordResetToken();
   await user.save();
 
-  // Encode the token
   const encodedToken = base64url.encode(resetToken);
 
-  // Ensure the URL is properly formatted
   const resetUrl = `http://localhost:8080/api/v1/users/reset-password/${encodedToken}`;
 
   try {
-    // Create the mail options
     const name = capitalizeFirstLetter(user.personalInfo.lastName);
     const mailOptions = {
       from: "info@linkedorigins.com",
@@ -107,8 +102,7 @@ exports.handleForgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    // Update the user's password
-    user.password = password; // Hashing is done in the User model's pre-save hook
+    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();

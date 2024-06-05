@@ -112,7 +112,6 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 userSchema.pre("save", function (next) {
-  // Only generate a new UUID if the document is new
   if (!this.userId) {
     this.userId = uuidv4();
   }
@@ -123,29 +122,19 @@ userSchema.pre("save", async function (next) {
     return next();
   }
   try {
-    // Generate a salt
     const salt = await bcrypt.genSalt(10);
-
-    // Hash the password using the salt
     const hashedPassword = await bcrypt.hash(this.personalInfo.password, salt);
 
-    // Replace the plain password with the hashed one
     this.personalInfo.password = hashedPassword;
-
-    // Call next middleware
     next();
   } catch (error) {
     next(error);
   }
 });
 userSchema.pre("save", function (next) {
-  // Check if this.profile is undefined
   if (!this.profile) {
-    // Initialize this.profile
     this.profile = {};
   }
-
-  // Set the name property of this.profile if it's not already set
   if (!this.profile.name) {
     this.profile.name = this.personalInfo.firstName;
   }

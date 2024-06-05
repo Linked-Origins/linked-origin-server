@@ -4,12 +4,8 @@ const Users = require("./../models/userSchema");
 const { google } = require("googleapis");
 const customsearch = google.customsearch("v1");
 const axios = require("axios");
-//54330fcc34f624f95
 
-async function searchGoogle(
-  query,
-  apiKey = "AIzaSyAWP7DFU6Qu0--EFv8hr7DMA9CHGPqG0Vo"
-) {
+async function searchGoogle(query, apiKey = process.env.GOOGLE_SEARCH_KEY) {
   try {
     const response = await customsearch.cse.list({
       auth: apiKey,
@@ -37,7 +33,7 @@ exports.addSearchQuery = catchAsync(async (req, res, next) => {
   });
 
   const results = response.data.items;
-  //update user search query
+
   const update = await Users.findOneAndUpdate(
     { userId: user.userId },
     { $push: { searchHistory: searchQuery } },
@@ -72,24 +68,21 @@ exports.getSearchHistory = catchAsync(async (req, res, next) => {
 });
 
 exports.googlePlaceCheck = async (req, res, next) => {
-  const query = req.body.query; // User search query, e.g., "where can I find pizza"
-  const lat = req.body.lat; // User's location, e.g., "New York, NY"
+  const query = req.body.query;
+  const lat = req.body.lat;
   const lng = req.body.lng;
 
+  const GOOGLE_PLACES_KEY = process.env.GOOGLE_PLACES_KEY;
+
   try {
-    // API endpoint and request (choose the appropriate API)
-    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${lat},${lng}&radius=50000&key=AIzaSyCNUr0hLtD4PNnqqz_20S7DZ20Z1buf-E0`;
+    const apiEndpoint = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${lat},${lng}&radius=50000&key=${GOOGLE_PLACES_KEY}`;
 
-    // Make the API request
     const response = await axios.get(apiEndpoint);
-
-    // Send the list of places back to the client
     res.json({
       results: response.data.results,
       length: response.data.results.length,
     });
   } catch (error) {
-    // Handle error
     console.error(error);
     res.status(500).json({ error: "Error fetching data" });
   }
