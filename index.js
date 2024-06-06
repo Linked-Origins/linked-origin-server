@@ -15,7 +15,7 @@ const newsletterSubscriptionRoute = require("./routes/subscriptionRoutes/newslet
 const forgottenPasswordRoute = require("./routes/passwordHandlingRoute/forgottenPasswordRoute");
 const { getNews, getWorldNews } = require("./controllers/newsController");
 const axios = require("axios");
-const { googlePlaceCheck } = require("./controllers/searchController");
+const { youtubeSearch } = require("./controllers/searchController");
 const {
   addCategory,
   addSubCategory,
