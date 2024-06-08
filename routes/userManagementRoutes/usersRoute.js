@@ -1,18 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const multerMiddleware = require("./../utils/image_upload/multerConfig");
+const multerMiddleware = require("../../utils/image_upload/multerConfig");
 
 const {
   checkNewUser,
   checkEmail,
   checkUserForUpdate,
-} = require("./../utils/validators");
+} = require("../../utils/validators");
 const {
   registerUser,
   getProfile,
   updateProfile,
-} = require("./../controllers/usersController");
-const { protectRoute, isLoggedIn } = require("./../controllers/authController");
+} = require("../../controllers/userManagement/usersController");
+const {
+  protectRoute,
+  isLoggedIn,
+} = require("../../controllers/authController/authController");
 
 router.post("/register-new-user", checkEmail, checkNewUser, registerUser);
 router.get("/profile", protectRoute, getProfile);

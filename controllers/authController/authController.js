@@ -1,20 +1,20 @@
-const Users = require("./../models/userSchema");
+const Users = require("../../models/userSchema");
 const jwt = require("jsonwebtoken");
-const catchAsync = require("./../utils/catchAsync");
-const ErrorHandler = require("../utils/ErrorHandler");
+const catchAsync = require("../../utils/catchAsync");
+const ErrorHandler = require("../../utils/ErrorHandler");
 const { promisify } = require("util");
 
 exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email);
+
   //check if user exists and password is correct
   const user = await Users.findOne({ "personalInfo.email": email })
     .select("personalInfo.password")
     .select("personalInfo.firstName")
     .select("personalInfo.lastName")
     .select("userId");
-  console.log(user);
+
   if (
     !user ||
     !(await user.correctPassword(password, user.personalInfo.password))
@@ -63,21 +63,19 @@ exports.isLoggedIn = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.cookie) {
     token = req.cookies.cookie;
-    console.log(token);
   }
   if (token) {
     //verifytoken
 
-    console.log("tokeeeeen", token);
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    console.log("decoded", decoded);
+
     //check if user still exists
     const currentUser = await Users.findOne({ userId: decoded.id });
     if (!currentUser) {
       return next(err);
     }
     req.user = currentUser;
-    console.log(currentUser);
+
     return next();
   }
 };
@@ -93,7 +91,6 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.cookie) {
     token = req.cookies.cookie;
-    console.log(token);
   } else {
     return res.status(401).json({
       message: `you need to be logged in to view this resource! Don't have an account? You can sign up for free!`,
@@ -103,7 +100,6 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({

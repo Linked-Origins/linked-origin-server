@@ -15,7 +15,6 @@ function createMulter(folderName) {
 }
 
 const multerMiddleware = (folderName) => {
-  console.log(folderName);
   const upload = createMulter(folderName).single("image");
   return (req, res, next) => {
     upload(req, res, (err) => {

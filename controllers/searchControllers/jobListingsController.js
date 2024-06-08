@@ -1,9 +1,11 @@
 const axios = require("axios");
 const job_id = process.env.JOBS_ID;
 const job_api = process.env.JOB_API_KEY;
-const catchAsync = require("./../utils/catchAsync");
+const catchAsync = require("../../utils/catchAsync");
+const Users = require("../../models/userSchema");
 
 exports.fetchJobListings = catchAsync(async function (req, res, next) {
+  const user = req.user;
   const searchParams = req.body;
   let page = 1;
   if (searchParams && searchParams.page) {
@@ -45,5 +47,11 @@ exports.fetchJobListings = catchAsync(async function (req, res, next) {
     redirectUrl: job.redirect_url || "",
     created: job.created || "",
   }));
+
+  //const update = await Users.findOneAndUpdate(
+  //{ userId: user.userId },
+  //{ $push: { searchHistory: searchParams.what } },
+  //{ new: true }
+  //);
   return res.status(200).json({ count: jobs.length, jobs: jobs });
 });
