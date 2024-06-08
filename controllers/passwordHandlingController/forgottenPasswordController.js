@@ -4,12 +4,12 @@ const crypto = require("crypto");
 const base64url = require("base64url"); // A library for base64 URL encoding
 
 const transporter = nodemailer.createTransport({
-  host: "mail.linkedorigins.com",
+  host: process.env.EMAIL_HOST,
   port: 587,
   secure: false,
   auth: {
-    user: "info@linkedorigins.com",
-    pass: "OwenSly77",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 

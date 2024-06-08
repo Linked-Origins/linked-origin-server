@@ -1,6 +1,6 @@
-const Users = require("./../models/userSchema");
-const Category = require("./../models/categorySchema");
-const MonAmiChatHistory = require("./../models/monAmiChatHistory");
+const Users = require("../../models/userSchema");
+const Category = require("../../models/categorySchema");
+const MonAmiChatHistory = require("../../models/monAmiChatHistory");
 
 exports.addCategory = async (req, res, next) => {
   const category = req.body.category;

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const News = require("./../models/newsSchema");
+const News = require("../../models/newsSchema");
 
 //exports.getNews = async (req, res, next) => {
 //  const apiKey = process.env.GNEWS_API_KEY;

@@ -42,7 +42,6 @@ exports.checkNewUser = (req, res, next) => {
   });
   // Validate password separately
   if (!validatePassword(req.body.password)) {
-    console.log("i am here");
     return res.status(400).json({
       status: "fail",
       error: {
@@ -54,7 +53,6 @@ exports.checkNewUser = (req, res, next) => {
 
   // Perform validation
   validation.check().then(async (matched) => {
-    console.log("gegege");
     if (!matched) {
       return res.status(400).json({ status: "fail", error: validation.errors });
     }

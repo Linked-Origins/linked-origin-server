@@ -1,7 +1,7 @@
-const catchAsync = require("./../utils/catchAsync");
-const ErrorHandler = require("./../utils/ErrorHandler");
+const catchAsync = require("../../utils/catchAsync");
+const ErrorHandler = require("../../utils/ErrorHandler");
 const nodemailer = require("nodemailer");
-const Users = require("./../models/userSchema");
+const Users = require("../../models/userSchema");
 
 const transporter = nodemailer.createTransport({
   host: "mail.linkedorigins.com",

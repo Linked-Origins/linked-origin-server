@@ -4,22 +4,27 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
-const usersRoute = require("./routes/usersRoute");
-const authRoute = require("./routes/authRoute");
-const searchRoute = require("./routes/searchRoute");
-const newsRoute = require("./routes/newsRoute");
-const chatRoute = require("./routes/chat");
-const jobsRoute = require("./routes/jobsListingsRoute");
+const usersRoute = require("./routes/userManagementRoutes/usersRoute");
+const authRoute = require("./routes/authRoutes/authRoute");
+const searchRoute = require("./routes/searchRoutes/searchRoute");
+const newsRoute = require("./routes/newsRoutes/newsRoute");
+const chatRoute = require("./routes/chatRoutes/chat");
 const matchingRoute = require("./routes/matchingRoutes/matchingRoute");
 const newsletterSubscriptionRoute = require("./routes/subscriptionRoutes/newsletterSubscriptionRoute");
-const forgottenPasswordRoute = require("./routes/passwordHandlingRoute/forgottenPasswordRoute");
-const { getNews, getWorldNews } = require("./controllers/newsController");
+const forgottenPasswordRoute = require("./routes/passwordHandlingRoutes/forgottenPasswordRoute");
+const searchHistoryRoute = require("./routes/searchRoutes/searchHistoryRoute");
+const {
+  getNews,
+  getWorldNews,
+} = require("./controllers/newsController/newsController");
 const axios = require("axios");
-const { youtubeSearch } = require("./controllers/searchController");
+const {
+  youtubeSearch,
+} = require("./controllers/searchManagementController/searchHistoryManagement");
 const {
   addCategory,
   addSubCategory,
-} = require("./controllers/categoryManagement");
+} = require("./controllers/categoryManagementController/categoryManagement");
 const cors = require("cors");
 
 const app = express();
@@ -61,10 +66,10 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/news-update", newsRoute);
 app.use("/api/v1/users/mon-ami", chatRoute);
-app.use("/api/v1/jobs", jobsRoute);
 app.use("/api/v1/matching/", matchingRoute);
 app.use("/api/v1/subscription/newsletter", newsletterSubscriptionRoute);
 app.use("/api/v1/password-handling", forgottenPasswordRoute);
+app.use("/api/v1/history", searchHistoryRoute);
 
 app.post("/add-category", addCategory);
 app.post("/add-subcategory", addSubCategory);
@@ -116,7 +121,6 @@ app.get("/worldnews", async (req, res, next) => {
     const data = response.data;
 
     // Log the data to the console
-    console.log(data);
 
     // Send the data as a JSON response to the client
     res.status(200).json(data);

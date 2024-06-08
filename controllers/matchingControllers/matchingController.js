@@ -84,5 +84,3 @@ exports.addNewLocal = catchAsync(async (req, res, next) => {
       .json({ message: "data saved successfully", data: newLocal });
   } else return next(new ErrorHandler("couldn't save data.", 401));
 });
-
-const match = catchAsync(async (req, res, next) => {});

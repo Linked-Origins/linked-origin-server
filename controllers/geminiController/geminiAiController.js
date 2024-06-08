@@ -4,11 +4,11 @@ const {
   HarmBlockThreshold,
 } = require("@google/generative-ai");
 
-const Users = require("./../models/userSchema");
+const Users = require("../../models/userSchema");
 const MODEL_NAME = "gemini-pro";
 const API_KEY = "AIzaSyAjzv84QBVbk7nIqw5reKBjCSzQcjh_STE";
-const Categories = require("./../models/categorySchema");
-const MonAmiChatHistory = require("./../models/monAmiChatHistory");
+const Categories = require("../../models/categorySchema");
+const MonAmiChatHistory = require("../../models/monAmiChatHistory");
 
 exports.runChat = async function (req, res, next) {
   const user = req.user;
