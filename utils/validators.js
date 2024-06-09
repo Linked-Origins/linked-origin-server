@@ -45,8 +45,7 @@ exports.checkNewUser = (req, res, next) => {
     return res.status(400).json({
       status: "fail",
       error: {
-        password:
-          "Password must meet the specified requirements: Must contain at least one uppercase letter, lowercase letter, one number between 0-9 and must be at least 8 characters long",
+        password: `Password must meet the specified requirements: Must contain at least one uppercase letter, lowercase letter, one number between 0-9 and must be at least 8 characters long`,
       },
     });
   }
