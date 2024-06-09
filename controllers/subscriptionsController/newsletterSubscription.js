@@ -2,27 +2,27 @@ const Subscriber = require("../../models/subscriptionModels/newsletterSubscriber
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.linkedorigins.com",
+  host: process.env.EMAIL_HOST,
   port: 587,
   secure: false,
   auth: {
-    user: "info@linkedorigins.com",
-    pass: "OwenSly77",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
 exports.subscribe = catchAsync(async (req, res, next) => {
-  const { email, name } = req.body;
+  const email = req.body.email;
 
-  if (!email || !name) {
-    return res.status(400).json({ message: "Name and email are required" });
+  if (!email) {
+    return res.status(400).json({ message: "email is required" });
   }
 
   try {
-    const newSubscriber = await Subscriber.create({ email, name });
+    const newSubscriber = await Subscriber.create({ email });
 
     const mailOptions = {
-      from: "info@linkedorigins.com",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Unlock Your Canadian Dream: Linked Origins Has You Covered!",
       text: `Hi,

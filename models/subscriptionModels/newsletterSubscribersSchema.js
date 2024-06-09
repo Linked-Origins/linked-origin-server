@@ -11,7 +11,6 @@ const subscriberSchema = new mongoose.Schema({
       message: (props) => `${props.value} is not a valid email address!`,
     },
   },
-  name: { type: String, required: [true, "Name is required"] },
 });
 
 subscriberSchema.pre("save", function (next) {
