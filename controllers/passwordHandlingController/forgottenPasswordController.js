@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const Users = require("./../../models/userSchema");
 const crypto = require("crypto");
-const base64url = require("base64url"); // A library for base64 URL encoding
+const base64url = require("base64url");
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -28,7 +28,7 @@ exports.forgotPassword = async (req, res, next) => {
     return res.status(400).json({ message: "User not found" });
   }
   const passwordResetToken = user.createPasswordResetToken();
-  console.log(passwordResetToken);
+
   await user.save();
 
   const encodedToken = base64url.encode(passwordResetToken);
@@ -82,7 +82,6 @@ The Linked Origins Team`,
 };
 
 exports.handleForgotPassword = async (req, res) => {
-  //get the encrypted token
   const token = req.params.token;
   const decodedToken = base64url.decode(token);
 
@@ -101,7 +100,7 @@ exports.handleForgotPassword = async (req, res) => {
         .status(400)
         .json({ message: "Password reset token is invalid or has expired" });
     }
-    const email = user.personalInfo.email
+    const email = user.personalInfo.email;
     res
       .status(200)
       .json({ message: "token valid", email: email })
@@ -113,10 +112,40 @@ exports.handleForgotPassword = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
+  function validatePassword(value) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    return regex.test(value);
+  }
   try {
-    const email = req.body.email
-    const password = req.body.password
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email || !password) {
+      return res
+        .status(401)
+        .json({ message: "Email and password are required" });
+    }
+    if (!validatePassword(password)) {
+      return res.status(401).json({
+        message:
+          "Password must meet the specified requirements: Must contain at least one uppercase letter, lowercase letter, one number between 0-9 and must be at least 8 characters long",
+      });
+
+      const changedPassword = await Users.findOneAndUpdate(
+        { "personalInfo.email": email },
+        { "personalInfo.Password": password },
+        { new: true }
+      );
+      if (!changedPassword) {
+        return res
+          .status(400)
+          .json({ message: "Couldn't update password or email not found" });
+      }
+      return res
+        .status(200)
+        .json({ message: "Password updated successfully." });
+    }
   } catch (error) {
-    
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
