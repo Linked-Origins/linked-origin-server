@@ -8,7 +8,7 @@ const {
 } = require("./../../controllers/passwordHandlingController/forgottenPasswordController");
 
 router.post("/forgotten-password", forgotPassword);
-router.post("/handle-forgotten-password", handleForgotPassword);
+router.post("/handle-forgotten-password/:token", handleForgotPassword);
 router.post("/change-password", changePassword);
 
 module.exports = router;
