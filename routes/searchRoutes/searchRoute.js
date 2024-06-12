@@ -17,8 +17,8 @@ const {
 } = require("../../controllers/searchControllers/jobListingsController");
 
 router.post("/google-search", protectRoute, googleSearch);
-router.get("/location-search", protectRoute, googlePlaceCheck);
-router.get("/youtube-search", protectRoute, youtubeSearch);
-router.get("/job-listings", protectRoute, fetchJobListings);
+router.post("/location-search", protectRoute, googlePlaceCheck);
+router.post("/youtube-search", protectRoute, youtubeSearch);
+router.post("/job-listings", protectRoute, fetchJobListings);
 
 module.exports = router;
