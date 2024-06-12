@@ -27,12 +27,13 @@ exports.forgotPassword = async (req, res, next) => {
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
-  const resetToken = user.createPasswordResetToken();
+  const passwordResetToken = user.createPasswordResetToken();
+  console.log(passwordResetToken);
   await user.save();
 
-  const encodedToken = base64url.encode(resetToken);
+  const encodedToken = base64url.encode(passwordResetToken);
 
-  const resetUrl = `http://localhost:8080/api/v1/users/reset-password/${encodedToken}`;
+  const resetUrl = `https://linkedorigins.ca/auth/change-password/${encodedToken}`;
 
   try {
     const name = capitalizeFirstLetter(user.personalInfo.lastName);
@@ -51,10 +52,10 @@ The Linked Origins Team`,
       html: `
       <p>Hi ${name},</p>
       <p>You are receiving this email because you (or someone else) have requested a password reset. 
-      Please click on the following link, or paste it into your browser to complete the process:</p>
-      <p><a href="${resetUrl}">${resetUrl}</a></p>
+      Please click on the following link to complete the process:</p>
+      <p><a href="${resetUrl}">reset password</a></p>
       <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
-      <p>The Linked Origins Team</p>
+      <p>The Linked Origins Team.</p>
       `,
     };
 
@@ -81,14 +82,18 @@ The Linked Origins Team`,
 };
 
 exports.handleForgotPassword = async (req, res) => {
+  //get the encrypted token
+  const token = req.params.token;
+  const decodedToken = base64url.decode(token);
+
   try {
     const hashedToken = crypto
       .createHash("sha256")
-      .update(req.params.token)
+      .update(decodedToken)
       .digest("hex");
     const user = await Users.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpires: { $gt: Date.now() },
+      passwordResetToken: hashedToken,
+      tokenExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -96,19 +101,22 @@ exports.handleForgotPassword = async (req, res) => {
         .status(400)
         .json({ message: "Password reset token is invalid or has expired" });
     }
-
-    const { password } = req.body;
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
-
-    res.status(200).json({ message: "Password has been reset" });
+    const email = user.personalInfo.email
+    res
+      .status(200)
+      .json({ message: "token valid", email: email })
+      .redirect("https://linkedorigins.ca/auth/change-password");
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const email = req.body.email
+    const password = req.body.password
+  } catch (error) {
+    
   }
 };
