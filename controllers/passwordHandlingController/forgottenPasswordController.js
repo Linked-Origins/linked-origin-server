@@ -33,7 +33,7 @@ exports.forgotPassword = async (req, res, next) => {
 
   const encodedToken = base64url.encode(passwordResetToken);
 
-  const resetUrl = `https://linked-origin-server.vercel.app/api/v1/password-handling/forgotten-password/${encodedToken}`;
+  const resetUrl = `https://linked-origin-server.vercel.app/api/v1/password-handling/handle-forgotten-password/${encodedToken}`;
 
   try {
     const name = capitalizeFirstLetter(user.personalInfo.lastName);
