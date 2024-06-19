@@ -4,12 +4,12 @@ const nodemailer = require("nodemailer");
 const Users = require("../../models/userSchema");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.linkedorigins.com",
+  host: "smtp.zoho.com",
   port: 587,
   secure: false,
   auth: {
-    user: "info@linkedorigins.com",
-    pass: "OwenSly77",
+    user: "info@linkedorigins.ca",
+    pass: "T#sdmvw7",
   },
 });
 
@@ -92,7 +92,7 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     // Create the mail options
     const lastName = capitalizeFirstLetter(personalInfo.lastName);
     const mailOptions = {
-      from: "info@linkedorigins.com",
+      from: "info@linkedorigins.ca",
       to: email,
       subject: "Welcome to Linked Origins: Your Gateway to Thriving in Canada!",
       text: `Hi ${lastName},
