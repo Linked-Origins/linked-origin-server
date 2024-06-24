@@ -151,6 +151,8 @@ exports.runChat = async function (req, res, next) {
         safetySettings,
         history: cleanedPersonaContext,
       });
+      const result = await chat.sendMessage(searchQuery);
+      let response = result.response.text();
       const updatedHistory = await userHistory.updateOne(
         { category: category },
         {
