@@ -2,14 +2,17 @@ const catchAsync = require("../../utils/catchAsync");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const nodemailer = require("nodemailer");
 const Users = require("../../models/userSchema");
+const sendToGoogleAnalytics = require("../../utils/googleAnalytics");
+const fs = require("fs");
+const path = require("path");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.linkedorigins.com",
+  host: "smtp.zoho.com",
   port: 587,
   secure: false,
   auth: {
-    user: "info@linkedorigins.com",
-    pass: "OwenSly77",
+    user: "info@linkedorigins.ca",
+    pass: "T#sdmvw7",
   },
 });
 
@@ -26,31 +29,25 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     email,
     password,
     phone,
-
     countryOfOrigin,
     currentImmigrationStatus,
     dateOfImmigration,
     visaType,
     typeOfStatus,
-
     nativeLanguage,
-
     highestLevelOfEducation,
     previousWorkExperience,
     aspirations,
-
     currentHousingSituation,
     housingPreference,
-
     numOfFamilyMembers,
     relationship,
-
     interestsAndHobbies,
     preferredSocialActivities,
     ethos,
-
     challenges,
     supportServices,
+    location,
   } = req.body;
 
   const personalInfo = {
@@ -69,17 +66,16 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     visaType,
     typeOfStatus,
   };
-  const languageProficiency = { nativeLanguage };
 
+  const languageProficiency = { nativeLanguage };
   const educationAndEmployment = {
     highestLevelOfEducation,
     previousWorkExperience,
     aspirations,
   };
+
   const housingSituation = { currentHousingSituation, housingPreference };
-
   const familyInfo = { numOfFamilyMembers, relationship };
-
   const socialIntegration = {
     interestsAndHobbies,
     preferredSocialActivities,
@@ -88,71 +84,50 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 
   const supportNeeds = { challenges, supportServices };
 
-  try {
-    // Create the mail options
-    const lastName = capitalizeFirstLetter(personalInfo.lastName);
+  const welcomeEmailPath = path.join(
+    __dirname,
+    "emailTemplates",
+    "welcomeEmail.html"
+  );
+
+  fs.readFile(welcomeEmailPath, "utf-8", async (err, html) => {
+    if (err) {
+      console.error("Error reading HTML file:", err);
+      return res.status(500).send("Could not read email template");
+    }
+
+    const lastNameCapitalized = capitalizeFirstLetter(personalInfo.lastName);
+    const customizedHtml = html.replace("{{lastName}}", lastNameCapitalized);
+
     const mailOptions = {
-      from: "info@linkedorigins.com",
+      from: "info@linkedorigins.ca",
       to: email,
       subject: "Welcome to Linked Origins: Your Gateway to Thriving in Canada!",
-      text: `Hi ${lastName},
-  We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower 
-  newcomers like you to settle in and succeed in Canada! 🇨🇦
-  
-  AI by Your Side, Community at Your Back
-  Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the 
-  resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your 
-  search for information, navigate government services, and find relevant community resources.
-  
-  Empowering Your Journey
-  Whether you're looking for information on immigration, healthcare, housing, education, or legal
-  services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive 
-  directory as we build our platform to help you connect with locals and other newcomers on a similar path.
-  
-  Join the Linked Origins Community
-  We are working to build a vibrant community of welcoming individuals and organizations ready 
-  to support you. Our coming soon features, discussion forums and matching system is being designed to 
-  help you network with fellow newcomers, share experiences with locals and build meaningful connections.
-  
-  Get Started Today!
-  Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.
-  Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.
-  Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)
-  Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.
-  
-  We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!
-  
-  The Linked Origins Team
-  `,
-      html: `
-        <p>Hi ${lastName},</p>
-  
-        <p>We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower newcomers like you to settle in and succeed in Canada! 🇨🇦</p>
-  
-        <p><strong>AI by Your Side, Community at Your Back</strong></p>
-        <p>Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your search for information, navigate government services, and find relevant community resources.</p>
-  
-        <p><strong>Empowering Your Journey</strong></p>
-        <p>Whether you're looking for information on immigration, healthcare, housing, education, or legal services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive directory as we build our platform to help you connect with locals and other newcomers on a similar path.</p>
-  
-        <p><strong>Join the Linked Origins Community</strong></p>
-        <p>We are working to build a vibrant community of welcoming individuals and organizations ready to support you. Our coming soon features, discussion forums and matching system is being designed to help you network with fellow newcomers, share experiences with locals and build meaningful connections.</p>
-  
-        <p><strong>Get Started Today!</strong></p>
-        <ul>
-          <li>Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.</li>
-          <li>Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.</li>
-          <li>Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)</li>
-          <li>Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.</li>
-        </ul>
-  
-        <p>We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!</p>
-  
-        <p>The Linked Origins Team</p>
-      `,
+      text: `Hi ${lastNameCapitalized},
+We're thrilled to welcome you to Linked Origins, your one-stop platform designed to empower newcomers like you to settle in and succeed in Canada! 🇨🇦
+
+AI by Your Side, Community at Your Back
+Linked Origins aims to leverage the power of artificial intelligence (AI) to connect you with the resources and support you need. Our friendly AI guide, Mon-Ami, is here to assist you in your search for information, navigate government services, and find relevant community resources.
+
+Empowering Your Journey
+Whether you're looking for information on immigration, healthcare, housing, education, or legal services, Mon-Ami can help you find the right answers and resources. Explore our comprehensive directory as we build our platform to help you connect with locals and other newcomers on a similar path.
+
+Join the Linked Origins Community
+We are working to build a vibrant community of welcoming individuals and organizations ready to support you. Our coming soon features, discussion forums and matching system is being designed to help you network with fellow newcomers, share experiences with locals and build meaningful connections.
+
+Get Started Today!
+Explore our Resource Directory: Search for information on a variety of topics relevant to newcomers in Canada.
+Connect with Mon-Ami: Ask your questions and get personalized assistance on your journey.
+Join the Community Forum: Connect with other newcomers and share experiences. (coming soon feature)
+Subscribe to our Newsletter: Stay updated on the latest resources, events, and stories.
+
+We're confident that Linked Origins will be a valuable resource as you navigate your new life in Canada. Welcome aboard!
+
+The Linked Origins Team
+`,
+      html: customizedHtml,
     };
 
-    // Send the email using transporter
     transporter.sendMail(mailOptions, async (error, info) => {
       if (error) {
         console.error("Error sending email:", error);
@@ -161,33 +136,41 @@ exports.registerUser = catchAsync(async (req, res, next) => {
             "Error sending email! Please check the email or contact administrator!",
         });
       } else {
-        // If the email is sent successfully, create the new user in the database
-        const newUser = await Users.create({
-          personalInfo,
-          immigrationInfo,
-          languageProficiency,
-          educationAndEmployment,
-          housingSituation,
-          familyInfo,
-          socialIntegration,
-          supportNeeds,
-        });
+        try {
+          // If the email is sent successfully, create the new user in the database
+          const newUser = await Users.create({
+            personalInfo,
+            immigrationInfo,
+            languageProficiency,
+            educationAndEmployment,
+            housingSituation,
+            familyInfo,
+            socialIntegration,
+            supportNeeds,
+          });
 
-        // Return a success response
-        return res
-          .status(200)
-          .json({ message: "Email sent and user saved successfully" });
+          // Return a success response
+          sendToGoogleAnalytics(
+            newUser.userId,
+            "registration",
+            newUser.personalInfo.email,
+            { lat: location.lat, long: location.long }
+          );
+
+          return res
+            .status(200)
+            .json({ message: "Email sent and user saved successfully" });
+        } catch (error) {
+          console.error("Error creating new user:", error);
+          return res.status(500).json({
+            status: "INTERNAL SERVER ERROR",
+            message: "Error saving to the database",
+          });
+        }
       }
     });
-  } catch (error) {
-    console.error("Error creating new user:", error);
-    return res.status(500).json({
-      status: "INTERNAL SERVER ERROR",
-      message: "Error saving to the database",
-    });
-  }
+  });
 });
-
 exports.getProfile = catchAsync(async (req, res, next) => {
   // Use the authenticated user from req.user
   const currentUser = req.user;
