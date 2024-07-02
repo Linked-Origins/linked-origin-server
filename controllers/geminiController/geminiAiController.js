@@ -5,7 +5,7 @@ const {
 } = require("@google/generative-ai");
 
 const Users = require("../../models/userSchema");
-const MODEL_NAME = "gemini-pro";
+const MODEL_NAME = "gemini-1.0-pro-001"; // "gemini-pro";
 const API_KEY = "AIzaSyAjzv84QBVbk7nIqw5reKBjCSzQcjh_STE";
 const Categories = require("../../models/categorySchema");
 const MonAmiChatHistory = require("../../models/monAmiChatHistory");
