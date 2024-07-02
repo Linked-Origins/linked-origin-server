@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
 const feedBackSchema = new mongoose.Schema({
   generalExperience: { type: Number },
@@ -13,6 +14,7 @@ const feedBackSchema = new mongoose.Schema({
   newcomerValuePerspective: { type: String },
   recommendLinkedOriginsFeedback: { type: String },
   additionalFeedBack: { type: String },
+  id: { type: String, default: uuidv4(), unique: true },
 });
 
 const FeedBack = mongoose.model("FeedBack", feedBackSchema);
