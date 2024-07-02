@@ -100,6 +100,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
@@ -109,7 +110,8 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     }
   }
 
-  const currentUser = await Users.findOne(decoded.userId);
+  const currentUser = await Users.findOne({ userId: decoded.id });
+
   if (!currentUser) {
     return next(
       new ErrorHandler(
