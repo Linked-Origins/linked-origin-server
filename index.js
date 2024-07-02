@@ -13,6 +13,7 @@ const matchingRoute = require("./routes/matchingRoutes/matchingRoute");
 const newsletterSubscriptionRoute = require("./routes/subscriptionRoutes/newsletterSubscriptionRoute");
 const forgottenPasswordRoute = require("./routes/passwordHandlingRoutes/forgottenPasswordRoute");
 const searchHistoryRoute = require("./routes/searchRoutes/searchHistoryRoute");
+const feedbackRoute = require("./routes/feedBackRoutes/feedBackRoute");
 const {
   getNews,
   getWorldNews,
@@ -70,6 +71,7 @@ app.use("/api/v1/matching/", matchingRoute);
 app.use("/api/v1/subscription/newsletter", newsletterSubscriptionRoute);
 app.use("/api/v1/password-handling", forgottenPasswordRoute);
 app.use("/api/v1/history", searchHistoryRoute);
+app.use("/api/v1/feedback", feedbackRoute);
 
 app.post("/add-category", addCategory);
 app.post("/add-subcategory", addSubCategory);
