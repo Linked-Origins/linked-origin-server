@@ -100,7 +100,6 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
