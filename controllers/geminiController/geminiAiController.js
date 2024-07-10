@@ -37,28 +37,16 @@ exports.runChat = async function (req, res, next) {
 
   /*get data from the front end */
   const category = req.body.category;
-  const subCategory = req.body.subCategory;
   const searchQuery = req.body.searchQuery;
   try {
-    // Define persona context with Mon-Ami's characteristics
-
     let personaContext;
 
-    const foundCategory = await Categories.findOne({ categoryName: category });
+    const foundCategory = await Categories.findOne({ category: category });
     if (!foundCategory) {
       return res.json({ message: "Category not found!" });
     }
-
-    const foundSubCategory = foundCategory.subCategories.find(
-      (sub) => sub.subCategoryName === subCategory
-    );
-
-    if (!foundSubCategory) {
-      return res.json({ message: "Subcategory not found!" });
-    }
-
     // retrieve the persona for the particular subcategory
-    personaContext = foundSubCategory.personaContext;
+    personaContext = foundCategory.personaContext;
 
     let cleanedPersonaContext = personaContext.map((obj) => ({
       role: obj.role,
@@ -68,7 +56,7 @@ exports.runChat = async function (req, res, next) {
     // Retrieve user's chat history from db
     let userHistory = await MonAmiChatHistory.findOne({ user: user._id });
 
-    /*if user has no history   succeeded */
+    /*if user has no history*/
     if (!userHistory) {
       const chat = model.startChat({
         generationConfig,
@@ -80,29 +68,33 @@ exports.runChat = async function (req, res, next) {
 
       const userNewChat = await MonAmiChatHistory.create({
         user: user._id,
-        categories: {
-          category: category,
-          subCategories: [
-            {
-              subCategoryName: subCategory,
-              chatMessages: [
-                { role: "user", parts: [{ text: searchQuery }] },
-                { role: "model", parts: [{ text: response }] },
-              ],
-            },
-          ],
-        },
+        categories: [
+          {
+            category: category,
+            chatMessages: [
+              {
+                query: {
+                  role: "user",
+                  parts: [{ text: searchQuery }],
+                },
+                response: {
+                  role: "model",
+                  parts: [{ text: response }],
+                },
+              },
+            ],
+          },
+        ],
       });
+
       return res.status(200).json({ response: response });
     }
 
-    /*check if the user has a chat history but the category and subCategory don't exist.
-    In this case, create a path for the category and subcategory*/
+    /*check if the user has a chat history but the category doesn'texist.
+    In this case, create a path for the category*/
 
-    //check if the category(indirectly and subCategory) exists
-    const existingSubCategory = userHistory.categories.find((item) =>
-      item.subCategories.find((sub) => sub.subCategoryName === subCategory)
-    );
+    //check if the category exists
+
     const existingCategory = userHistory.categories.find(
       (item) => item.category === category
     );
@@ -119,16 +111,19 @@ exports.runChat = async function (req, res, next) {
       const updatedHistory = await MonAmiChatHistory.findOneAndUpdate(
         { user: user._id },
         {
-          $push: {
+          $addToSet: {
             categories: {
               category: category,
-              subCategories: [
+              chatMessages: [
                 {
-                  subCategoryName: subCategory,
-                  chatMessages: [
-                    { role: "user", parts: [{ text: searchQuery }] },
-                    { role: "model", parts: [{ text: response }] },
-                  ],
+                  query: {
+                    role: "user",
+                    parts: [{ text: searchQuery }],
+                  },
+                  response: {
+                    role: "model",
+                    parts: [{ text: response }],
+                  },
                 },
               ],
             },
@@ -140,54 +135,21 @@ exports.runChat = async function (req, res, next) {
       return res.status(200).json({ response });
     }
 
-    //  /*if user history exists, category exists but not subCategory... push new subcategory.*/
-    if (
-      userHistory &&
-      existingCategory.category === category &&
-      existingSubCategory === undefined
-    ) {
-      const chat = model.startChat({
-        generationConfig,
-        safetySettings,
-        history: cleanedPersonaContext,
-      });
-      const result = await chat.sendMessage(searchQuery);
-      let response = result.response.text();
-      const updatedHistory = await userHistory.updateOne(
-        { category: category },
+    /*check if the user has a history and the category exists. Push into chat messages😉 */
+    if (userHistory && existingCategory !== undefined) {
+      let history = existingCategory.chatMessages.flatMap((message) => [
         {
-          $push: {
-            categories: {
-              category: category,
-              subCategories: [
-                {
-                  subCategoryName: subCategory,
-                  chatMessages: [
-                    { role: "user", parts: [{ text: searchQuery }] },
-                    { role: "model", parts: [{ text: response }] },
-                  ],
-                },
-              ],
-            },
-          },
+          role: message.query.role,
+          parts: message.query.parts.map((part) => ({ text: part.text })),
         },
-        { new: true }
-      );
-      return res.status(200).json({ response });
-    }
-    /*check if the user has a history and the category and subcategory exists. Push into chat messages😉 */
-    if (
-      userHistory &&
-      existingCategory !== undefined &&
-      existingSubCategory !== undefined
-    ) {
-      let history;
-      history = existingCategory.subCategories[0].chatMessages;
+        {
+          role: message.response.role,
+          parts: message.response.parts.map((part) => ({ text: part.text })),
+        },
+      ]);
+      history = [...cleanedPersonaContext, ...history];
 
-      history = history.map((obj) => ({
-        role: obj.role,
-        parts: [{ text: obj.parts[0].text }],
-      }));
+      console.log(history);
 
       const chat = model.startChat({
         generationConfig,
@@ -198,27 +160,23 @@ exports.runChat = async function (req, res, next) {
       let response = result.response.text();
 
       const updatedHistory = await MonAmiChatHistory.findOneAndUpdate(
-        {
-          user: user._id,
-          "categories.category": category,
-          "categories.subCategories.subCategoryName": subCategory,
-        },
+        { user: user._id, "categories.category": category },
         {
           $push: {
-            "categories.$.subCategories.$[elem].chatMessages": {
-              $each: [
-                { role: "user", parts: [{ text: searchQuery }] },
-                { role: "model", parts: [{ text: response }] },
-              ],
+            "categories.$.chatMessages": {
+              query: {
+                role: "user",
+                parts: [{ text: searchQuery }],
+              },
+              response: {
+                role: "model",
+                parts: [{ text: response }],
+              },
             },
-          }, // Push new chat contents to chat history
+          },
         },
-        {
-          arrayFilters: [{ "elem.subCategoryName": subCategory }],
-          new: true,
-        }
+        { new: true }
       );
-
       return res.status(200).json({ response });
     }
   } catch (error) {
