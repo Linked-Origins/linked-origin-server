@@ -74,7 +74,6 @@ app.use("/api/v1/history", searchHistoryRoute);
 app.use("/api/v1/feedback", feedbackRoute);
 
 app.post("/add-category", addCategory);
-app.post("/add-subcategory", addSubCategory);
 
 // Route to fetch and scrape CBC News articles
 //app.get("/cbs-news", async (req, res) => {
