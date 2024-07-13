@@ -150,12 +150,12 @@ The Linked Origins Team
           });
 
           // Return a success response
-          sendToGoogleAnalytics(
-            newUser.userId,
-            "registration",
-            newUser.personalInfo.email,
-            { lat: location.lat, long: location.long }
-          );
+          //sendToGoogleAnalytics(
+          //  newUser.userId,
+          //  "registration",
+          //  newUser.personalInfo.email,
+          //  { lat: location.lat, long: location.long }
+          //);
 
           return res
             .status(200)
