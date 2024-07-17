@@ -47,6 +47,10 @@
       .content p {
         margin-bottom: 10px;
       }
+      .username {
+        color: #333;
+        margin-bottom: 10px;
+      }
       .content h2 {
         font-size: 16px;
         color: #333;
@@ -70,8 +74,8 @@
     </style>
   </head>
   <body>
+    <p class="username">Hi, {{lastName}}.</p>
     <div class="email-container">
-      <p>Hi, {{lastName}}.</p>
       <img
         class="logo"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/e3ed10db03116cec078c39c2c3fbf66e60f25dad0d1cc75bc81768f1c75ec76a?apiKey=40621ed5d4fd4492af4d4dffefbaaa2d&"
@@ -114,7 +118,7 @@
           <a href="mailto:support@linkedorigins.ca">support@linkedorigins.ca</a
           >.
         </p>
-        <p>We look forward to being a part of your journey!</yp>
+        <p>We look forward to being a part of your journey!</p>
         <div class="footer">
           <p>Warmly,</p>
           <p>The Linked Origins Team</p>
