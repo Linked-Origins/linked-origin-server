@@ -10,10 +10,12 @@ const searchRoute = require("./routes/searchRoutes/searchRoute");
 const newsRoute = require("./routes/newsRoutes/newsRoute");
 const chatRoute = require("./routes/chatRoutes/chat");
 const matchingRoute = require("./routes/matchingRoutes/matchingRoute");
+const contactRoute = require("./routes/contactRoute");
 const newsletterSubscriptionRoute = require("./routes/subscriptionRoutes/newsletterSubscriptionRoute");
 const forgottenPasswordRoute = require("./routes/passwordHandlingRoutes/forgottenPasswordRoute");
 const searchHistoryRoute = require("./routes/searchRoutes/searchHistoryRoute");
 const feedbackRoute = require("./routes/feedBackRoutes/feedBackRoute");
+const vendorRoute = require("./routes/vendorRoutes/vendorRoute");
 const {
   getNews,
   getWorldNews,
@@ -72,6 +74,8 @@ app.use("/api/v1/subscription/newsletter", newsletterSubscriptionRoute);
 app.use("/api/v1/password-handling", forgottenPasswordRoute);
 app.use("/api/v1/history", searchHistoryRoute);
 app.use("/api/v1/feedback", feedbackRoute);
+app.use("/api/v1/vendor", vendorRoute);
+app.use("/api/v1/contact-us", contactRoute);
 
 app.post("/add-category", addCategory);
 

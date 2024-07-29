@@ -1,0 +1,48 @@
+const Vendor = require("./../../models/vendorRegSchema");
+
+exports.vendorRegistration = catchAsync(async (req, res, next) => {
+  if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+    return res.status(400).json({ message: "empty request body." });
+  }
+  const {
+    businessName,
+    businessType,
+    address,
+    city,
+    province,
+    postalCode,
+
+    name,
+    email,
+    phone,
+
+    businessDescription,
+    uniqueSellingPoint,
+  } = req.body;
+
+  const businessDetails = {
+    businessName,
+    businessType,
+    address,
+    city,
+    province,
+    postalCode,
+  };
+  const contactInfo = {
+    name,
+    email,
+    phone,
+  };
+  const additionalDetails = { businessDescription, uniqueSellingPoint };
+  const newVendor = await Vendor.create({
+    businessDetails,
+    contactInfo,
+    additionalDetails,
+  });
+
+  if (newVendor) {
+    return res
+      .status(200)
+      .json({ message: "vendor details added succesfully." });
+  }
+});

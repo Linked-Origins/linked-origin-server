@@ -17,6 +17,7 @@ exports.postFeedBack = async (req, res, next) => {
     } = req.body;
 
     const feedback = await FeedBack.create({
+      generalExperience,
       specificFeatures,
       mostHelpfulFeature,
       leastHelpfulFeature,
